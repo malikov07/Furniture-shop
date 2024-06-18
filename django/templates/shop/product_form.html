@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Product Form</title>
+    <style>
+        /* Basic styling for the container */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        /* Styling for headers inside the container */
+        h1 {
+            color: #333;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        /* General styling for forms */
+        form {
+            margin-top: 20px;
+        }
+
+        /* Styling form paragraphs for better layout */
+        form p {
+            margin-bottom: 10px;
+        }
+
+        /* Styling input fields and textareas */
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="date"],
+        textarea,
+        select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Styling the submit button */
+        button[type="submit"] {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+
+        /* Styling for secondary button (Back to Shop or Cancel) */
+        a.btn-secondary {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #f0ad4e;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        a.btn-secondary:hover {
+            background-color: #ec971f;
+        }
+
+        /* Styling for the delete button */
+        .btn-danger {
+            background-color: #d9534f;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c9302c;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>{% if form.instance.pk %}Update{% else %}Create{% endif %} Product</h1>
+        <form method="post"  enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="file" name="images" multiple><br>
+            <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Update{% else %}Create{% endif %}
+                Product</button>
+        </form>
+        <a href="{% url 'shop' %}" class="btn btn-secondary">Back to Shop</a>
+    </div>
+</body>
+
+</html>

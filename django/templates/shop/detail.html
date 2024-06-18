@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+    <script>
+        function showDescription() {
+            document.getElementById('product-description').style.display = 'block';
+            document.getElementById('product-reviews').style.display = 'none';
+            document.getElementById('comment-form').style.display = 'none';
+        }
+
+        function showReviews() {
+            document.getElementById('product-description').style.display = 'none';
+            document.getElementById('product-reviews').style.display = 'block';
+            document.getElementById('comment-form').style.display = 'block';
+        }
+
+        function switchImage(src) {
+            document.getElementById('main-image').src = src;
+        }
+
+        function scrollCarousel(direction) {
+            const carousel = document.getElementById('thumbnails-carousel');
+            const scrollAmount = 200; // Adjust as needed
+            if (direction === 'left') {
+                carousel.scrollLeft -= scrollAmount;
+            } else {
+                carousel.scrollLeft += scrollAmount;
+            }
+        }
+    </script>
+    
+            <div class="container mt-5" style="padding-bottom: 150px;">
+                <div class="product-main">
+                    <div class="product-image">
+                        <img id="main-image" src="{{product.image.url}}" alt="Product Image">
+                        <div class="thumbnails-container">
+                            <button onclick="scrollCarousel('left')" class="arrow-button left">&lt;</button>
+                            <div id="thumbnails-carousel" class="thumbnails-carousel">
+                                <img style="width: 100px; height: 100px; box-shadow: 0 0 20px 5px black; " class="shadow" src="{{product.image.url}}" alt="Thumbnail 1"
+                                    onclick="switchImage('{{product.image.url}}')">
+                                {% for p_image in p_images %}
+                                <img style="width: 100px; height: 100px;" class="shadow" src="{{p_image.image.url}}" alt="Thumbnail 1"
+                                    onclick="switchImage('{{p_image.image.url}}')">
+                                
+                                {% endfor %}
+                                <!-- Add more thumbnails here if needed -->
+                            </div>
+                            <button onclick="scrollCarousel('right')" class="arrow-button right">&gt;</button>
+                        </div>
+                    </div>
+                    <div class="product-details">
+                        <h1 class="product-title">{{product.name}}</h1>
+                        <p class="product-price"><strong>Price:</strong> ${{product.price}}</p>
+                        <p class="product-info"><strong>description:</strong> {{product.description}}</p>
+                        <p class="product-info"><strong>category(ies):</strong>
+                        {% for category in categories %}
+                            {{category.category.name}}
+                        {% endfor %}
+                        </p>
+                        <p class="product-info"><strong>width:</strong> {{product.width}}</p>
+                        <p class="product-info"><strong>height:</strong> {{product.height}}</p>
+                        <p class="product-info"><strong>deep:</strong> {{product.deep}}</p>
+                        <p class="product-info"><strong>color:</strong> {{product.get_color_display}}</p>
+                        <p class="product-info"><strong>material:</strong> {{product.get_material_display}}</p>
+                        <p class="product-info"><strong>company_name:</strong> {{product.company_name}}</p>
+                        <p class="product-info"><strong>style:</strong> {{product.get_style_display}}</p>
+                        <p class="product-info"><strong>watanty_duration:</strong> {{product.watanty_duration}}</p>
+                        
+                        <p class="product-info"><strong>Created Date:</strong>{{product.created_date}}</p>
+                        <div class="product-buttons">
+                            <button class="buy-now-button">Buy Now</button>
+                            <form method="get" action="{% url 'add-to-cart' %}">
+                                <input type="hidden" name="user_id" value="{{request.user.id}}">
+                                <input type="hidden" name="product_id" value="{{product.id}}">
+                                <button type="submit" class="add-to-cart-button">Add to Cart</button>
+                            </form>
+                            {% if request.user.is_superuser %}
+                            <a href="{% url 'shop-update' product.id %}"><button class="update-button">Update</button></a>
+                            <a href="{% url 'shop-delete' product.id %}"><button class="delete-button">Delete</button></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="product-links">
+                    <a href="#" onclick="showDescription()">Description</a> |
+                    <a href="#" onclick="showReviews()">Reviews</a>
+                </div>
+                <div id="product-description" class="product-description">
+                    <h2>Description</h2>
+                    <p>
+                        {{product.description}}
+                    </p>
+                </div>
+                <div id="product-reviews" class="product-reviews" style="display:none;">
+                    <h2>Reviews</h2>
+                    <div class="review">
+                        <p><strong>John Doe:</strong> Great product! Highly recommend.</p>
+                        <p class="review-date">Reviewed on January 5, 2024</p>
+                    </div>
+                    <div class="review">
+                        <p><strong>Jane Smith:</strong> Excellent quality and fast shipping.</p>
+                        <p class="review-date">Reviewed on January 10, 2024</p>
+                    </div>
+                    <div class="review">
+                        <p><strong>Bob Johnson:</strong> Good value for money. Very satisfied.</p>
+                        <p class="review-date">Reviewed on January 15, 2024</p>
+                    </div>
+                </div>
+                <div id="comment-form" class="comment-form" style="display:none;">
+                    <h2>Leave a Review</h2>
+                    <form>
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                        <label for="comment">Review:</label>
+                        <textarea id="comment" name="comment" rows="4" required></textarea>
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+
+</body>
+
+</html>
+{% endblock %}
